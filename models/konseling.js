@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Konseling extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,13 +9,17 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      User.hasMany(models.Konseling, {
+      Konseling.belongsTo(models.User, {
         foreignKey: "id_user",
-        as: "konselings",
+        as: "user",
+      });
+      Konseling.belongsTo(models.Psikolog, {
+        foreignKey: "id_psikolog",
+        as: "psikolog",
       });
     }
   }
-  User.init(
+  Konseling.init(
     {
       nama: {
         type: DataTypes.STRING,
@@ -25,27 +29,44 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      password: {
+      asal_sekolah: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      umur: {
+      no_hp: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      jenis_kelamin: {
-        type: DataTypes.ENUM("pria", "wanita"),
+      paket: {
+        type: DataTypes.ENUM("online", "offline"),
         allowNull: false,
       },
-      sekolah: {
+      keluhan: {
         type: DataTypes.STRING,
+        allowNull: false,
+      },
+      jadwal: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
+        allowNull: false,
+      },
+      id_user: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      id_psikolog: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     },
     {
       sequelize,
-      modelName: "User",
+      modelName: "Konseling",
     }
   );
-  return User;
+  return Konseling;
 };
