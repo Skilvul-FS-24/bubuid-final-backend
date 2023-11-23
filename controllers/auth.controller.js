@@ -20,7 +20,9 @@ module.exports = {
             id:user.id, email:user.email
         }, process.env.JWT_KEY)
         res.json({
-            message: "berhasil login", token
+            message: "berhasil login", 
+            token,
+            id_user: user.id
         })
 
         } catch (error) {
