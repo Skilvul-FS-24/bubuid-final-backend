@@ -1,20 +1,16 @@
 "use strict";
 const { Model } = require("sequelize");
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
       User.hasMany(models.Konseling, {
         foreignKey: "id_user",
         as: "konselings",
       });
     }
   }
+
   User.init(
     {
       nama: {
@@ -24,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
       email: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true, // Kolom email harus unik
+        validate: {
+          isEmail: true, // Validasi email menggunakan Sequelize
+        },
       },
       password: {
         type: DataTypes.STRING,
@@ -47,5 +47,18 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+
+  // Validasi tambahan menggunakan hooks Sequelize
+  User.addHook("beforeValidate", async (user, options) => {
+    // Cek apakah email sudah digunakan
+    const existingUser = await User.findOne({
+      where: { email: user.email },
+    });
+
+    if (existingUser) {
+      throw new Error("Email sudah digunakan");
+    }
+  });
+
   return User;
 };
