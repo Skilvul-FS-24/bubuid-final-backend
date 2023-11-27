@@ -67,8 +67,8 @@ module.exports = {
       });
     } catch (error) {
       res.status(500).json({
-        message: "Gagal menambahkan user",
-        error: error.message,
+        error: "Gagal menambahkan user",
+        message: error.message,
       });
     }
   },
